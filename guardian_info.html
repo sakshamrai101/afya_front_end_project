@@ -5,61 +5,82 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Guardian Information Form</title>
-    <link rel="stylesheet" href="styles/guardian_info.css">
+    <link rel="stylesheet" href="static/styles/guardian_info.css">
 </head>
 
 <body>
 
     <div class="form-container">
         <h2><strong>Guardian Information</strong></h2>
-
         <p>As the patient is under 18, please provide guardian information.</p>
-        <form>
+        <form id="guardianInfoForm">
             <div class="form-group">
                 <label for="firstName"><strong>Guardian First Name</strong></label>
-                <input type="text" id="firstName" placeholder="Guardian First Name">
+                <input type="text" id="firstName" name="firstName" placeholder="Guardian First Name" required>
             </div>
             <div class="form-group">
                 <label for="lastName"><strong>Guardian Last Name</strong></label>
-                <input type="text" id="lastName" placeholder="Guardian Last Name">
+                <input type="text" id="lastName" name="lastName" placeholder="Guardian Last Name" required>
             </div>
             <div class="form-group">
-                <label for="relationship">Relationship To Patient</label>
+                <label>Relationship To Patient</label>
                 <div class="radio-group">
-                    <input type="radio" id="father" name="relationship" value="father">
+                    <input type="radio" id="father" name="relationship" value="father" required>
                     <label for="father">Father</label><br>
 
-                    <input type="radio" id="mother" name="relationship" value="mother">
+                    <input type="radio" id="mother" name="relationship" value="mother" required>
                     <label for="mother">Mother</label><br>
 
-                    <input type="radio" id="other" name="relationship" value="other">
+                    <input type="radio" id="other" name="relationship" value="other" required>
                     <label for="other">Other</label><br>
                 </div>
             </div>
-            
+
             <div class="form-group">
                 <label for="other-specify">If other, please specify</label>
-                <textarea id="other-specify" placeholder="Specify other relationship"></textarea>
+                <textarea id="other-specify" name="other-specify" placeholder="Specify other relationship"></textarea>
             </div>
-            
+
             <div class="form-group">
                 <label>Does the phone number provided belong to the guardian?</label>
                 <div class="radio-group">
-                    <input type="radio" id="yes" name="phone-belong" value="yes">
+                    <input type="radio" id="yes" name="phone-belong" value="yes" required>
                     <label for="yes">Yes</label><br>
-                    
-                    <input type="radio" id="no" name="phone-belong" value="no">
+
+                    <input type="radio" id="no" name="phone-belong" value="no" required>
                     <label for="no">No</label><br>
-                    
                 </div>
             </div>
-            
+
             <div class="form-navigation">
-                <button type="button">Prev: Basic Information</button>
+                <button type="button" onclick="history.back()">Prev: Basic Information</button>
                 <button type="submit">Next: Confirmation</button>
             </div>
         </form>
     </div>
+
+    <script>
+        document.getElementById('guardianInfoForm').onsubmit = function (e) {
+            e.preventDefault(); // Prevent default form submission
+            var formData = new FormData(this);
+            // Assuming that the Flask endpoint '/submit-guardian-form' handles the form submission and redirection
+            fetch('/submit-guardian-form', {
+                method: 'POST',
+                body: formData,
+            })
+                .then(response => {
+                    console.log(response)
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    // Redirect to the confirmation page if the response is ok
+                    window.location.href = '/confirmation.html';
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        };
+    </script>
 
 </body>
 

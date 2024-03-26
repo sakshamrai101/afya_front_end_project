@@ -1,6 +1,5 @@
-/* Consent form CSS */
 body {
-    font-family: Arial, sans-serif;
+    font-family: Arial, Helvetica, sans-serif;
     background-color: #f4f4f4;
     margin: 0;
     padding: 0;
@@ -13,6 +12,7 @@ body {
     max-width: 300px;
     border-radius: 8px;
     text-align: center;
+    display: flexbox;
 }
 
 h2 {
@@ -63,7 +63,7 @@ p {
     border: none;
     border-radius: 4px;
     background-color: #f4a34c;
-    color: white;
+    color: black;
     cursor: pointer;
 }
 
