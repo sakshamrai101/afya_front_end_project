@@ -59,11 +59,12 @@
         </form>
     </div>
 
+    <!--Script to redirect to confirmation page.-->
     <script>
         document.getElementById('guardianInfoForm').onsubmit = function (e) {
-            e.preventDefault(); // Prevent default form submission
+            e.preventDefault(); 
             var formData = new FormData(this);
-            // Assuming that the Flask endpoint '/submit-guardian-form' handles the form submission and redirection
+            // The Gurdian form end point 
             fetch('/submit-guardian-form', {
                 method: 'POST',
                 body: formData,
@@ -73,7 +74,7 @@
                     if (!response.ok) {
                         throw new Error('Network response was not ok');
                     }
-                    // Redirect to the confirmation page if the response is ok
+                    // Ridirecting to confirmation page, if response back from the SQLITE server is good.
                     window.location.href = '/confirmation.html';
                 })
                 .catch(error => {
