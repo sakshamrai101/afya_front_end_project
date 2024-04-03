@@ -67,18 +67,21 @@ def submit_form():
     conn = get_db_connection()
     c = conn.cursor()
 
+    # Insert patient information
     c.execute('''
-    INSERT INTO patients (firstName, lastName, gender, dob, phone, address, city, state, zip)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-    ''', (data['patient']['firstName'], data['patient']['lastName'], data['patient']['gender'], data['patient']['dob'], data['patient']['phone'], data['patient']['address'], data['patient']['city'], data['patient']['state'], data['patient']['zip']))
+        INSERT INTO patients (first_name, last_name, gender, dob, phone, address, city, state, zip_code)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+    ''', (data['firstName'], data['lastName'], data['gender'], data['dob'], data['phone'], data['address'], data['city'], data['state'], data['zip']))
 
-    patient_id = c.lastrowid
+    patient_id = c.lastrowid # primary key
 
-    if 'guardian' in data and data['guardian']:
+    # Insert guardian information if it exists
+    guardian = data.get('guardianInfo') 
+    if guardian:
         c.execute('''
-        INSERT INTO guardians (patient_id, firstName, lastName, relationship, otherSpecify)
-        VALUES (?, ?, ?, ?, ?)
-        ''', (patient_id, data['guardian']['firstName'], data['guardian']['lastName'], data['guardian']['relationship'], data['guardian']['otherSpecify'] if 'otherSpecify' in data['guardian'] else ""))
+            INSERT INTO guardians (patient_id, first_name, last_name, relationship, other_specify, phone_belong)
+            VALUES (?, ?, ?, ?, ?, ?)
+        ''', (patient_id, guardian['firstName'], guardian['lastName'], guardian['relationship'], guardian.get('otherSpecify', ''), guardian['phoneBelong']))
 
     conn.commit()
     conn.close()

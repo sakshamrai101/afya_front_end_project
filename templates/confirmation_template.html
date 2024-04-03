@@ -24,7 +24,7 @@
         </div>
 
         <div class="form-navigation">
-            <button type="button" onclick="window.location.href = 'previous_page_url';">Prev: Guardian
+            <button type="button" onclick="window.location.href = 'guardian_info.html';">Prev: Guardian
                 Information</button>
             <button type="button" id="confirmButton">Confirm</button>
         </div>
@@ -34,39 +34,43 @@
         document.addEventListener('DOMContentLoaded', function () {
             displayPatientInfo();
             displayGuardianInfo();
-
             document.getElementById('confirmButton').addEventListener('click', function () {
-                window.location.href = '/consent'; // Adjust the URL as needed
-            });
+            window.location.href = '/consent'; 
         });
+    });
 
         function displayPatientInfo() {
-            const patientInfo = JSON.parse(localStorage.getItem('basicInfo'));
+            const basicInfo = JSON.parse(localStorage.getItem('basicInfo'));
             const patientInfoDisplay = document.getElementById('patient-info-display');
-            patientInfoDisplay.innerHTML = `
-                <p><strong>Patient First Name:</strong> ${patientInfo.firstName}</p>
-                <p><strong>Patient Last Name:</strong> ${patientInfo.lastName}</p>
-                <p><strong>Gender:</strong> ${patientInfo.gender}</p>
-                <p><strong>Date of Birth:</strong> ${patientInfo.dob}</p>
-                <p><strong>Phone:</strong> ${patientInfo.phone}</p>
-                <p><strong>Address:</strong> ${patientInfo.address}, ${patientInfo.city}, ${patientInfo.state}, ${patientInfo.zip}</p>
-            `;
+            if (basicInfo) {
+                patientInfoDisplay.innerHTML = `
+                    <p><strong>Patient First Name:</strong> ${basicInfo.firstName}</p>
+                    <p><strong>Patient Last Name:</strong> ${basicInfo.lastName}</p>
+                    <p><strong>Gender:</strong> ${basicInfo.gender}</p>
+                    <p><strong>Date of Birth:</strong> ${basicInfo.dob}</p>
+                    <p><strong>Phone:</strong> ${basicInfo.phone}</p>
+                    <p><strong>Address:</strong> ${basicInfo.address}, ${basicInfo.city}, ${basicInfo.state}, ${basicInfo.zip}</p>
+                `;
+            }
         }
 
         function displayGuardianInfo() {
-            const guardianInfo = JSON.parse(localStorage.getItem('guardianInfo'));
+            const basicInfo = JSON.parse(localStorage.getItem('basicInfo'));
+            const guardianInfo = basicInfo?.guardianInfo; // Using optional chaining
             const guardianInfoDisplay = document.getElementById('guardian-info-display');
+
             if (guardianInfo) {
                 guardianInfoDisplay.innerHTML = `
                     <p><strong>Guardian First Name:</strong> ${guardianInfo.firstName}</p>
                     <p><strong>Guardian Last Name:</strong> ${guardianInfo.lastName}</p>
                     <p><strong>Relationship:</strong> ${guardianInfo.relationship}</p>
-                    <p><strong>Other Specify:</strong> ${guardianInfo.otherSpecify || ''}</p>
+                    <p><strong>Other Specify:</strong> ${guardianInfo.otherSpecify || 'N/A'}</p>
                     <p><strong>Phone Belong:</strong> ${guardianInfo.phoneBelong}</p>
                 `;
             } else {
                 guardianInfoDisplay.innerHTML = `<p>No Guardian Information Provided.</p>`;
             }
+            
         }
     </script>
 </body>
