@@ -41,6 +41,8 @@ def init_db():
         ''')
         conn.commit()
 
+
+# Basic routing for all pages. 
 @app.route('/')
 def basic_info():
     return render_template('basic_info.html')
@@ -61,32 +63,36 @@ def show_consent():
 def submission():
     return render_template('submit.html')
 
-@app.route('/submit-form', methods=['POST'])
-def submit_form():
-    data = request.get_json()
+@app.route('/submit-consent', methods=['POST'])
+def submit_consent():
+    data = request.json
     conn = get_db_connection()
     c = conn.cursor()
 
-    # Insert patient information
+    # Sanitising and inserting patient data. 
     c.execute('''
         INSERT INTO patients (first_name, last_name, gender, dob, phone, address, city, state, zip_code)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-    ''', (data['firstName'], data['lastName'], data['gender'], data['dob'], data['phone'], data['address'], data['city'], data['state'], data['zip']))
+    ''', (data['patientInfo']['firstName'], data['patientInfo']['lastName'], data['patientInfo']['gender'],
+         data['patientInfo']['dob'], data['patientInfo']['phone'], data['patientInfo']['address'],
+         data['patientInfo']['city'], data['patientInfo']['state'], data['patientInfo']['zip']))
 
-    patient_id = c.lastrowid # primary key
+    patient_id = c.lastrowid
 
-    # Insert guardian information if it exists
-    guardian = data.get('guardianInfo') 
-    if guardian:
+    # Sanitizing and inserting the guardian data. 
+    if data['guardianInfo']:
         c.execute('''
             INSERT INTO guardians (patient_id, first_name, last_name, relationship, other_specify, phone_belong)
             VALUES (?, ?, ?, ?, ?, ?)
-        ''', (patient_id, guardian['firstName'], guardian['lastName'], guardian['relationship'], guardian.get('otherSpecify', ''), guardian['phoneBelong']))
+        ''', (patient_id, data['guardianInfo']['firstName'], data['guardianInfo']['lastName'],
+             data['guardianInfo']['relationship'], data['guardianInfo'].get('otherSpecify', ''),
+             data['guardianInfo']['phoneBelong']))
 
     conn.commit()
     conn.close()
 
     return jsonify({'message': 'Data saved successfully', 'patient_id': patient_id}), 200
+
 
 # Ensure the DB is initialized when running the app
 with app.app_context():
