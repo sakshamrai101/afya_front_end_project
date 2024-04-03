@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consent Form</title>
+    <link rel="stylesheet" href="../static/css/consent.css">
+</head>
+
+<body>
+    <div class="form-container">
+        <h2>Consent Form</h2>
+        <p>I, the undersigned, hereby give my consent to [Your Clinic Name Here] to provide medical care and designated
+            agents, its medical staff, and its treatment considered necessary and advisable for my diagnosis and
+            treatment. I understand that this is a placeholder consent form, and I will be required to sign a final,
+            legally binding consent form upon my arrival at the clinic.</p>
+
+        <!-- Display Patient Name and Today's Date -->
+        <div class="info-group">
+            <label for="name">Name:</label>
+            <span id="patientName">Loading...</span>
+
+            <label for="date">Date:</label>
+            <span id="currentDate">Loading...</span>
+        </div>
+
+        <!-- Editable Signature Field -->
+        <div class="signature-group">
+            <label for="signature">Signature:</label>
+            <input type="text" id="signature" name="signature" placeholder="Your Signature Here" required>
+        </div>
+
+        <!-- Captcha -->
+        <div class="checkbox-group">
+            <input type="checkbox" id="not-robot" name="not-robot" required>
+            <label for="not-robot">I'm not a robot</label>
+        </div>
+
+        <div class="form-navigation">
+            <button type="button" onclick="history.back()">Prev: Confirmation</button>
+            <button type="button" id="submitConsent">Submit</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            
+            const patientInfo = JSON.parse(localStorage.getItem('basicInfo')) || {};
+            document.getElementById('patientName').textContent = `${patientInfo.firstName || ''} ${patientInfo.lastName || ''}`;
+            document.getElementById('currentDate').textContent = new Date().toLocaleDateString();
+
+            document.getElementById('submitConsent').addEventListener('click', function () {
+                if (!document.getElementById('not-robot').checked) {
+                    alert('Please confirm you are not a robot.');
+                    return;
+                }
+
+                patientInfo.signature = document.getElementById('signature').value;
+
+                localStorage.setItem('basicInfo', JSON.stringify(patientInfo));
+
+                window.location.href = '/submit';
+
+            });
+        });
+    </script>
+</body>
+
+</html>

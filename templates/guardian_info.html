@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Guardian Information Form</title>
-    <link rel="stylesheet" href="static/styles/guardian_info.css">
+    <link rel="stylesheet" href="../static/css/guardian_info.css">
 </head>
 
 <body>
@@ -54,32 +54,27 @@
 
             <div class="form-navigation">
                 <button type="button" onclick="history.back()">Prev: Basic Information</button>
-                <button type="submit">Next: Confirmation</button>
+                <button type="button" id="submitGuardianInfo">Next: Confirmation</button>
             </div>
         </form>
     </div>
 
-    <!--Script to redirect to confirmation page.-->
     <script>
-        document.getElementById('guardianInfoForm').onsubmit = function (e) {
-            e.preventDefault(); 
-            var formData = new FormData(this);
-            // The Gurdian form end point 
-            fetch('/submit-guardian-form', {
-                method: 'POST',
-                body: formData,
-            })
-                .then(response => {
-                    console.log(response)
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
-                    }
-                    // Ridirecting to confirmation page, if response back from the SQLITE server is good.
-                    window.location.href = '/confirmation.html';
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
+        document.getElementById('submitGuardianInfo').onclick = function () {
+            var formData = {
+                firstName: document.getElementById('firstName').value,
+                lastName: document.getElementById('lastName').value,
+                relationship: document.querySelector('input[name="relationship"]:checked').value,
+                otherSpecify: document.getElementById('other-specify').value,
+                phoneBelong: document.querySelector('input[name="phone-belong"]:checked').value,
+            };
+
+            var basicInfo = JSON.parse(localStorage.getItem('basicInfo'));
+            basicInfo.guardianInfo = formData;
+
+            localStorage.setItem('basicInfo', JSON.stringify(basicInfo));
+
+            window.location.href = '/confirmation';
         };
     </script>
 
